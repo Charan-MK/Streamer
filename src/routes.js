@@ -3,13 +3,48 @@ const router = express.Router()
 const path = require('path')
 const fs = require('fs')
 const app = express()
+const multer = require('multer')
 
 app.use(express.static(path.join(__dirname, '../public')))
-
+app.use(express.urlencoded())
+app.use(express.json())
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, '../views'))
 
 let videoList =[]
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, 'assets')
+    },
+    filename: function(req, file, cb){
+        cb(null, file.originalname)
+    }
+})
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 100000000
+    },
+
+    fileFilter(req, file, callback){
+        if(!file.originalname.match(/\.(mp4|mkv)$/)){
+            callback(new Error("file type must be .mp4 or .mkv"))
+        }
+
+        callback(undefined, true)
+    }
+})
+
+router.get('/upload', (req, res)=>{
+    res.render('upload')
+})
+
+router.post('/upload', upload.single('my-video'), (req, res)=>{
+    console.log("req.body: ",req.body, req.file)
+    res.send("Upload success")
+})
 
 router.get('/', (req, res)=>{
     videoList = fs.readdirSync(path.join(__dirname, '../assets'))

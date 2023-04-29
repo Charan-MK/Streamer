@@ -9,7 +9,7 @@ a{
     color: inherit;
 }
 
-div{
+#videoList{
     background-color: rgb(91, 92, 94);
     height: 20px;
     display: flex;
@@ -18,4 +18,42 @@ div{
     border-radius: 5px;
     box-shadow: 2px;
     margin-top: 1%;
+}
+
+#uploadFile{
+    margin: 20px;
+    width: 40%;
+    padding: 12px 15px 12px;
+    border: 2px;
+    border-color: antiquewhite;
+    background-color: rgb(173, 171, 167);
+    border-radius: 5px;
+}
+
+button{
+    width: 30%;
+    padding: 10px 10px 10px;
+    border: 2px;
+    border-color: antiquewhite;
+    background-color: rgb(153, 152, 149);
+    margin-bottom: 25px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form{
+    width: 60%;
+    background-color: rgb(105, 101, 101);
+    margin: 0 auto;
+    border-radius: 5px;
+    box-shadow: 2px;
+}
+
+#uploadDiv{
+    width: 80%;
+    margin: 0 auto;
+    border: 5px;
+    border-radius: 15px;
+    box-shadow: 2px;
+    align-self: center;
 }
