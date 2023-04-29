@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home</title>
+        <link rel="icon" href="icon.png">
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <h1>Welcome to <b>V Hub</b></h1>
+        {{#each videoList}}
+        <div>
+            <a href="/video/{{this}}">{{this}}</a>
+        </div>
+        {{/each}}
+    </body>
+</html>
