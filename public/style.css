@@ -57,3 +57,11 @@ form{
     box-shadow: 2px;
     align-self: center;
 }
+
+nav a{
+    padding: 10px 25px 10px;
+    color: rgb(15, 15, 15);
+    background-color: rgb(228, 221, 209);
+    border-radius: 5px;
+    margin: auto 10px 10px;
+}

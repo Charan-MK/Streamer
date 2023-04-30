@@ -4,14 +4,21 @@ const path = require('path')
 const fs = require('fs')
 const app = express()
 const multer = require('multer')
+const Video = require('./db/videoModel')
+require('./db/mongoose')
+const sharp = require('sharp')
+const hbs = require('hbs')
 
 app.use(express.static(path.join(__dirname, '../public')))
 app.use(express.urlencoded())
 app.use(express.json())
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, '../views'))
+hbs.registerPartials(path.join(__dirname,'../views/partials'))
 
-let videoList =[]
+// app.get('/', (req, res)=>{
+//     res.status(200).render('home')
+// })
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
@@ -37,16 +44,47 @@ const upload = multer({
     }
 })
 
+const dBupload = multer({
+    // storage: storage,
+    limits: {
+        fileSize: 100000000
+    },
+
+    fileFilter(req, file, callback){
+        if(!file.originalname.match(/\.(mp4|mkv)$/)){
+            callback(new Error("file type must be .mp4 or .mkv"))
+        }
+
+        callback(undefined, true)
+    }
+})
+
 router.get('/upload', (req, res)=>{
     res.render('upload')
 })
 
 router.post('/upload', upload.single('my-video'), (req, res)=>{
-    console.log("req.body: ",req.body, req.file)
     res.send("Upload success")
 })
 
-router.get('/', (req, res)=>{
+router.get('/upload/db', (req, res)=>{
+    res.render('dBupload')
+})
+
+router.post('/upload/db', dBupload.single('my-video'), async (req, res)=>{
+    console.log("req.body: ",req.body, req.file)
+    const video = new Video({
+        name: req.file.originalname,
+        video: req.file.buffer
+    })
+    video.save()
+
+    res.status(201).send({"upload":"success"})
+})
+
+let videoList =[]
+
+router.get('/videoList', (req, res)=>{
     videoList = fs.readdirSync(path.join(__dirname, '../assets'))
     res.status(200).render('videoList', {videoList})
 })
