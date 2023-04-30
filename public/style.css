@@ -65,3 +65,7 @@ nav a{
     border-radius: 5px;
     margin: auto 10px 10px;
 }
+
+nav{
+    margin: 3%;
+}
