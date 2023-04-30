@@ -47,7 +47,7 @@ const upload = multer({
 const dBupload = multer({
     // storage: storage,
     limits: {
-        fileSize: 100000000
+        fileSize: 15000000
     },
 
     fileFilter(req, file, callback){
@@ -60,6 +60,7 @@ const dBupload = multer({
 })
 
 router.get('/upload', (req, res)=>{
+     createAssetsDir()
     res.render('upload')
 })
 
@@ -77,14 +78,25 @@ router.post('/upload/db', dBupload.single('my-video'), async (req, res)=>{
         name: req.file.originalname,
         video: req.file.buffer
     })
-    video.save()
+    let result = video.save()
+
+    console.log("Result of uploading the file to db", result)
 
     res.status(201).send({"upload":"success"})
 })
 
+function createAssetsDir(){
+    if(!fs.existsSync(path.join(__dirname, '../assets'))){
+        console.log("creating a local directory to store media")
+        fs.mkdirSync('./assets')
+    }
+}
+
 let videoList =[]
 
-router.get('/videoList', (req, res)=>{
+router.get('/', (req, res)=>{
+    console.log(fs.existsSync(path.join(__dirname, '../assets')))
+    createAssetsDir()
     videoList = fs.readdirSync(path.join(__dirname, '../assets'))
     res.status(200).render('videoList', {videoList})
 })
