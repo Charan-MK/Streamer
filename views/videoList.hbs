@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Home</title>
+        <title>On-Premise</title>
         <link rel="icon" href="icon.png">
         <link rel="stylesheet" href="style.css">
     </head>
 
     <body>
-        {{> header }}
-        <h1>Welcome to <b>V Hub</b></h1>
+        <div class="header-navigation-pages">
+            <h4>On-Premise</h4>
+            <span><a href="/">Back</a></span>
+        </div>
         {{#each videoList}}
         <div id="videoList">
             <a href="/video/{{this}}">{{this}}</a>
