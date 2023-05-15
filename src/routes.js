@@ -20,6 +20,39 @@ hbs.registerPartials(path.join(__dirname,'../views/partials'))
 //     res.status(200).render('home')
 // })
 
+//fetch the video from Database
+router.get('/db/videos', async (req, res)=>{
+    let dBlist = await Video.find({})
+    console.log("dB List", typeof dBlist[1].video)
+    let dBvideos = []
+    dBlist.forEach(vid=>{
+        console.log(vid.name)
+        dBvideos.push(vid.name)
+    })
+    res.status(200).render('dbList',{
+        dbVideoList:dBvideos
+    })
+})
+
+router.get('/db/videos/:dbVideoName', async (req,res)=>{
+    res.status(200).render('dbVideos', {
+        dbVideoName: req.params.dbVideoName
+    })
+})
+
+//RETRIEVING MEDIA FROM MONGODB DTATABASE
+router.get('/db/videos/play/:dbVideoName', async (req, res)=>{
+    let video = await Video.find({name:req.params.dbVideoName}) //fetches the specified video array
+
+    if(video.length!=0){
+        const dbVideo  =  video[0].video
+        res.status(200).send(dbVideo)
+    }
+    else{
+        res.status(400).send({"error": "Video could not be found"})
+    }
+})
+
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, 'assets')
@@ -61,15 +94,15 @@ const dBupload = multer({
 
 router.get('/upload', (req, res)=>{
      createAssetsDir()
-    res.render('upload')
+    res.status(200).render('upload')
 })
 
 router.post('/upload', upload.single('my-video'), (req, res)=>{
-    res.send("Upload success")
+    res.status(200).send("Upload success")
 })
 
 router.get('/upload/db', (req, res)=>{
-    res.render('dBupload')
+    res.status(200).render('dBupload')
 })
 
 router.post('/upload/db', dBupload.single('my-video'), async (req, res)=>{
