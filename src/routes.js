@@ -16,17 +16,16 @@ app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, '../views'))
 hbs.registerPartials(path.join(__dirname,'../views/partials'))
 
-// app.get('/', (req, res)=>{
-//     res.status(200).render('home')
-// })
+app.get('/', (req, res)=>{
+    res.status(200).render('home')
+})
 
 //fetch the video from Database
 router.get('/db/videos', async (req, res)=>{
     let dBlist = await Video.find({})
-    console.log("dB List", typeof dBlist[1].video)
+    
     let dBvideos = []
     dBlist.forEach(vid=>{
-        console.log(vid.name)
         dBvideos.push(vid.name)
     })
     res.status(200).render('dbList',{
@@ -98,7 +97,7 @@ router.get('/upload', (req, res)=>{
 })
 
 router.post('/upload', upload.single('my-video'), (req, res)=>{
-    res.status(200).send("Upload success")
+    res.status(200).render("upload_success")
 })
 
 router.get('/upload/db', (req, res)=>{
@@ -106,16 +105,12 @@ router.get('/upload/db', (req, res)=>{
 })
 
 router.post('/upload/db', dBupload.single('my-video'), async (req, res)=>{
-    console.log("req.body: ",req.body, req.file)
     const video = new Video({
         name: req.file.originalname,
         video: req.file.buffer
     })
     let result = video.save()
-
-    console.log("Result of uploading the file to db", result)
-
-    res.status(201).send({"upload":"success"})
+    res.status(201).render('upload_success')
 })
 
 function createAssetsDir(){
@@ -127,15 +122,13 @@ function createAssetsDir(){
 
 let videoList =[]
 
-router.get('/', (req, res)=>{
-    console.log(fs.existsSync(path.join(__dirname, '../assets')))
+router.get('/localVideos', (req, res)=>{
     createAssetsDir()
     videoList = fs.readdirSync(path.join(__dirname, '../assets'))
     res.status(200).render('videoList', {videoList})
 })
 
 router.get('/video/:videoName', (req, res)=>{
-    console.log(req.params)
     res.render('videos', {
         videoName: req.params.videoName
     })
