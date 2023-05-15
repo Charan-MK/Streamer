@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Video</title>
+        <link rel="shortcut icon" href="/icon.png" type="image/x-icon">
+    </head>
+
+    <style>
+        body{
+            text-align: center;
+            background-color: black;
+            color: rgb(228, 221, 209);
+        }
+    </style>
+
+    <body>
+        <h2>dbVideo playing</h2>
+        <h3>{{dbVideoName}}</h3>
+        <video id="videoPlayer" width="auto" height="auto" muted controls>
+            <source src='/db/videos/play/{{dbVideoName}}' type="video/mp4"/>
+        </video>
+    </body>
+</html>

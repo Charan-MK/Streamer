@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DB List</title>
+        <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+        <link rel="stylesheet" href="/style.css">
+    </head>
+
+    <body>
+        <h3>DB List</h3>
+        {{#each dbVideoList}}
+        <div id="videoList">
+            <a href="/db/videos/{{this}}">{{this}}</a>
+        </div>
+        {{/each}}
+    </body>
+</html>
