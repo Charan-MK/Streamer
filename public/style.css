@@ -1,6 +1,6 @@
 body{
     text-align: center;
-    background-color: black;
+    background-color: #222;
     color: rgb(228, 221, 209);
 }
 
@@ -10,7 +10,7 @@ a{
 }
 
 #videoList{
-    background-color: rgb(91, 92, 94);
+    background-color: #3b3b3b;
     height: 20px;
     display: flex;
     padding: 20px 10px 20px;
@@ -25,8 +25,8 @@ a{
     width: 40%;
     padding: 12px 15px 12px;
     border: 2px;
-    border-color: antiquewhite;
-    background-color: rgb(173, 171, 167);
+    border-color: #5c5959;
+    background-color: #515151;
     border-radius: 5px;
 }
 
@@ -35,7 +35,7 @@ button{
     padding: 10px 10px 10px;
     border: 2px;
     border-color: antiquewhite;
-    background-color: rgb(153, 152, 149);
+    background-color: #52c448;
     margin-bottom: 25px;
     border-radius: 5px;
     cursor: pointer;
@@ -43,7 +43,7 @@ button{
 
 form{
     width: 60%;
-    background-color: rgb(105, 101, 101);
+    background-color:#3b3b3b;
     margin: 0 auto;
     border-radius: 5px;
     box-shadow: 2px;
@@ -61,11 +61,15 @@ form{
 nav a{
     padding: 10px 25px 10px;
     color: rgb(15, 15, 15);
-    background-color: rgb(228, 221, 209);
+    background-color: rgb(97, 226, 125);
     border-radius: 5px;
     margin: auto 10px 10px;
 }
 
 nav{
     margin: 3%;
+}
+
+img{
+    border-radius: 30px;
 }
