@@ -4,23 +4,42 @@ const path = require('path')
 const fs = require('fs')
 const app = express()
 const multer = require('multer')
-const Video = require('./db/videoModel')
-require('./db/mongoose')
+const Video = require('../db/videoModel')
+require('../db/mongoose')
 const hbs = require('hbs')
+const auth = require('../middlewares/auth')
 
-app.use(express.static(path.join(__dirname, '../public')))
+const session = require('express-session')
+// const MongoStore = require('connect-mongodb-session')(session)
+
+// const store = new MongoStore({
+//     uri: process.env.MONGOBD_URL,
+//     collection: 'sessions'
+// })
+
+const cookieTimer = 60 * 2 * 1000
+
+app.use(session({
+    secret: 'mysecret',
+    saveUninitialized: false,
+    resave: false,
+    cookie: { maxAge: cookieTimer }
+}))
+
+app.use(express.static(path.join(__dirname, '../../public')))
 app.use(express.urlencoded())
 app.use(express.json())
-app.set('view engine', 'hbs')
-app.set('views', path.join(__dirname, '../views'))
-hbs.registerPartials(path.join(__dirname, '../views/partials'))
 
-app.get('/', (req, res) => {
+app.set('view engine', 'hbs')
+app.set('views', path.join(__dirname, '../../views'))
+hbs.registerPartials(path.join(__dirname, '../../views/partials'))
+
+app.get('/', auth, async (req, res) => {
     res.status(200).render('home')
 })
 
 // fetch the video from Database
-router.get('/db/videos', async (req, res) => {
+router.get('/db/videos', auth, async (req, res) => {
     const dBlist = await Video.find({})
 
     const dBvideos = []
@@ -32,14 +51,14 @@ router.get('/db/videos', async (req, res) => {
     })
 })
 
-router.get('/db/videos/:dbVideoName', async (req, res) => {
+router.get('/db/videos/:dbVideoName', auth, async (req, res) => {
     res.status(200).render('dbVideos', {
         dbVideoName: req.params.dbVideoName
     })
 })
 
 // RETRIEVING MEDIA FROM MONGODB DTATABASE
-router.get('/db/videos/play/:dbVideoName', async (req, res) => {
+router.get('/db/videos/play/:dbVideoName', auth, async (req, res) => {
     const video = await Video.find({ name: req.params.dbVideoName }) // fetches the specified video array
 
     if (video.length !== 0) {
@@ -89,20 +108,20 @@ const dBupload = multer({
     }
 })
 
-router.get('/upload', (req, res) => {
+router.get('/upload', auth, (req, res) => {
     createAssetsDir()
     res.status(200).render('upload')
 })
 
-router.post('/upload', upload.single('my-video'), (req, res) => {
+router.post('/upload', auth, upload.single('my-video'), (req, res) => {
     res.status(200).render('upload_success')
 })
 
-router.get('/upload/db', (req, res) => {
+router.get('/upload/db', auth, (req, res) => {
     res.status(200).render('dBupload')
 })
 
-router.post('/upload/db', dBupload.single('my-video'), async (req, res) => {
+router.post('/upload/db', auth, dBupload.single('my-video'), async (req, res) => {
     const video = new Video({
         name: req.file.originalname,
         video: req.file.buffer
@@ -112,7 +131,7 @@ router.post('/upload/db', dBupload.single('my-video'), async (req, res) => {
 })
 
 function createAssetsDir () {
-    if (!fs.existsSync(path.join(__dirname, '../assets'))) {
+    if (!fs.existsSync(path.join(__dirname, '../../assets'))) {
         console.log('creating a local directory to store media')
         fs.mkdirSync('./assets')
     }
@@ -120,26 +139,26 @@ function createAssetsDir () {
 
 let videoList = []
 
-router.get('/localVideos', (req, res) => {
+router.get('/localVideos', auth, (req, res) => {
     createAssetsDir()
-    videoList = fs.readdirSync(path.join(__dirname, '../assets'))
+    videoList = fs.readdirSync(path.join(__dirname, '../../assets'))
     res.status(200).render('videoList', { videoList })
 })
 
-router.get('/video/:videoName', (req, res) => {
+router.get('/video/:videoName', auth, (req, res) => {
     res.render('videos', {
         videoName: req.params.videoName
     })
 })
 
-router.get('/playVideo/:videoName', (req, res) => {
+router.get('/playVideo/:videoName', auth, (req, res) => {
     let range = req.headers.range
     // console.log("This is range", range)
     if (!range) {
         range = 'bytes=0-'
         // res.status(400).send("Requires Range header");
     }
-    const videoPath = path.join(__dirname, '../assets/' + req.params.videoName)
+    const videoPath = path.join(__dirname, '../../assets/' + req.params.videoName)
     const videoSize = fs.statSync(videoPath).size
     const CHUNK_SIZE = 10 ** 6
     const start = Number(range.replace(/\D/g, ''))
