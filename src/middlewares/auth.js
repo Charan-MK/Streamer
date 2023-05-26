@@ -1,6 +1,6 @@
 const auth = async (req, res, next) => {
     if (!req.session.user) {
-        return res.redirect('/login')
+        return res.status(401).redirect('/login')
     }
     next()
 }
