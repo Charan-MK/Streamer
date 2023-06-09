@@ -9,6 +9,7 @@ require('../db/mongoose')
 const hbs = require('hbs')
 const auth = require('../middlewares/auth')
 const admin = require('../middlewares/admin')
+const isNotLoggedIn = require('../middlewares/isNotLoggedIn')
 const session = require('express-session')
 // const MongoStore = require('connect-mongodb-session')(session)
 
@@ -42,7 +43,11 @@ hbs.registerHelper('ifCdn', function (op1, op2, options) {
     }
 })
 
-app.get('/', auth, async (req, res) => {
+router.get('/', isNotLoggedIn, (req, res) => {
+    res.render('landing')
+})
+
+router.get('/home', auth, async (req, res) => {
     res.status(200).render('home', {
         role: req.session.user.role
     })

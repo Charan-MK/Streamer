@@ -7,7 +7,6 @@
     </head>
 
     <body>
-        {{role}}
         <div id="navbar">
             <nav>
                 {{#ifCdn role 'ADMIN' }}
@@ -15,10 +14,12 @@
                 <a href="/upload/db">Uploadto Database</a>
                 <a href="/localVideos">On-premises Videos</a>
                 <a href="/db/videos">Database Videos</a>
+                <a href="/logout"> logout</a>
 
                 {{else}}
                 <a href="/localVideos">On-premises Videos</a>
                 <a href="/db/videos">Database Videos</a>
+                <a href="/logout"> logout</a>
 
                 {{/ifCdn}}
                 

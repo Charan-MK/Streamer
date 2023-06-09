@@ -24,7 +24,7 @@ router.post('/signup', async (req, res) => {
         user = new User(req.body)
         await user.save()
         req.session.user = user
-        res.status(201).redirect('/')
+        res.status(201).redirect('/home')
     } catch (error) {
         console.error(error)
         res.status(500).send('Something went wrong')
@@ -38,7 +38,6 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
     if (!req.body.username || !req.body.password) return res.status(400).send({ error: 'bad request' })
 
-    console.log('req body: ', req.body)
     const user = await User.findOne({ username: req.body.username })
 
     if (!user) {
@@ -48,7 +47,7 @@ router.post('/login', async (req, res) => {
 
     if (isMatch) {
         req.session.user = user
-        return res.redirect('/')
+        return res.redirect('/home')
     }
     res.status(401).send('unauthorized')
 })
