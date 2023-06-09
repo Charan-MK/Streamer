@@ -37,7 +37,13 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
     if (!req.body.username || !req.body.password) return res.status(400).send({ error: 'bad request' })
+
+    console.log('req body: ', req.body)
     const user = await User.findOne({ username: req.body.username })
+
+    if (!user) {
+        return res.sendStatus(404)
+    }
     const isMatch = await bcrypt.compare(req.body.password, user.password)
 
     if (isMatch) {

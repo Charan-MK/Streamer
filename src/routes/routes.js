@@ -8,7 +8,7 @@ const Video = require('../db/videoModel')
 require('../db/mongoose')
 const hbs = require('hbs')
 const auth = require('../middlewares/auth')
-
+const admin = require('../middlewares/admin')
 const session = require('express-session')
 // const MongoStore = require('connect-mongodb-session')(session)
 
@@ -17,7 +17,7 @@ const session = require('express-session')
 //     collection: 'sessions'
 // })
 
-const cookieTimer = 60 * 2 * 1000
+const cookieTimer = 60 * 5 * 1000
 
 app.use(session({
     secret: 'mysecret',
@@ -34,8 +34,18 @@ app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, '../../views'))
 hbs.registerPartials(path.join(__dirname, '../../views/partials'))
 
+hbs.registerHelper('ifCdn', function (op1, op2, options) {
+    if (op1 === 'ADMIN') {
+        return options.fn(this)
+    } else {
+        return options.inverse(this)
+    }
+})
+
 app.get('/', auth, async (req, res) => {
-    res.status(200).render('home')
+    res.status(200).render('home', {
+        role: req.session.user.role
+    })
 })
 
 // fetch the video from Database
@@ -108,20 +118,24 @@ const dBupload = multer({
     }
 })
 
-router.get('/upload', auth, (req, res) => {
+router.get('/upload', auth, admin, (req, res) => {
     createAssetsDir()
-    res.status(200).render('upload')
+    res.status(200).render('upload', {
+        role: req.session.user.role
+    })
 })
 
-router.post('/upload', auth, upload.single('my-video'), (req, res) => {
+router.post('/upload', auth, admin, upload.single('my-video'), (req, res) => {
     res.status(200).render('upload_success')
 })
 
-router.get('/upload/db', auth, (req, res) => {
-    res.status(200).render('dBupload')
+router.get('/upload/db', admin, auth, (req, res) => {
+    res.status(200).render('dBupload', {
+        role: req.session.user.role
+    })
 })
 
-router.post('/upload/db', auth, dBupload.single('my-video'), async (req, res) => {
+router.post('/upload/db', admin, auth, dBupload.single('my-video'), async (req, res) => {
     const video = new Video({
         name: req.file.originalname,
         video: req.file.buffer
