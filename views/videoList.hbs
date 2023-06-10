@@ -11,10 +11,12 @@
             <h4>On-Premise</h4>
             <span><a href="/">Back</a></span>
         </div>
-        {{#each videoList}}
-        <div id="videoList">
-            <a href="/video/{{this}}">{{this}}</a>
+        <div class="videoList">
+            {{#each videoList}}
+            <div id="videoList">
+                <a href="/video/{{this}}">{{this}}</a>
+            </div>
+            {{/each}}
         </div>
-        {{/each}}
     </body>
 </html>

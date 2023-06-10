@@ -9,15 +9,33 @@ a{
     color: inherit;
 }
 
+.dbVideoList{
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.videoList{
+    width: 95%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
 #videoList{
     background-color: #3b3b3b;
-    height: 20px;
-    display: flex;
+    height: 10em;
+    display: inherit;
+    align-items: center;
     padding: 20px 10px 20px;
     border: 5px;
     border-radius: 5px;
     box-shadow: 2px;
     margin-top: 1%;
+    margin-right: 1%;
+}
+
+#videoList:hover{
+    background-color: darkslategray;
 }
 
 #uploadFile{
@@ -80,3 +98,8 @@ input{
     border-radius: 5px;
     margin: 5px 2px 5px;
 }
+
+#logout_link{
+    background-color: lightcoral;
+}
+
