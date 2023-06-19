@@ -73,3 +73,10 @@ nav{
 img{
     border-radius: 30px;
 }
+
+input{
+    width: 60%;
+    padding: 15px 10px 15px;
+    border-radius: 5px;
+    margin: 5px 2px 5px;
+}
