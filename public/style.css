@@ -34,6 +34,10 @@ a{
     margin-right: 1%;
 }
 
+#videoList a:hover{
+    color: #69cf5f;
+}
+
 #videoList:hover{
     background-color: darkslategray;
 }
@@ -103,3 +107,58 @@ input{
     background-color: lightcoral;
 }
 
+table{
+    width: 90%;
+    margin: auto;
+}
+
+thead{
+    background-color: #464545;
+}
+
+td, th{
+    padding: 10px;
+    text-align: center;
+}
+
+tr:nth-child(even){
+    background-color: #464545;
+}
+
+select{
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#userUpdateForm{
+
+    height: fit-content;
+
+}
+
+#userUpdateForm select{
+    margin: auto 2%;
+    width: 45%;
+}
+#userUpdateForm button{
+    margin: auto 2%;
+    width: 45%;
+}
+
+.header-div{
+    display: flex;
+}
+
+.header-div a{
+    float: right;
+    margin: auto;
+}
+
+.header-div a:hover{
+    color: #52c448;
+}
+
+.header-div h2{
+    width: 80%;
+    color: #52c448;
+}
