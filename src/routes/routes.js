@@ -36,7 +36,7 @@ app.set('views', path.join(__dirname, '../../views'))
 hbs.registerPartials(path.join(__dirname, '../../views/partials'))
 
 hbs.registerHelper('ifCdn', function (op1, op2, options) {
-    if (op1 === 'ADMIN') {
+    if (op1 === op2) {
         return options.fn(this)
     } else {
         return options.inverse(this)

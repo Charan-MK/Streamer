@@ -17,7 +17,8 @@ router.post('/signup', async (req, res) => {
         if (!req.body) {
             res.status(400).send({ error: 'Require details' })
         }
-        let user = await User.find({ username: req.body.username })
+        const username = req.body.username.trim()
+        let user = await User.find({ username })
         if (user.length !== 0) {
             return res.status(400).send({ error: 'Bad request/Invalid credentials' })
         }
@@ -37,13 +38,14 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
     if (!req.body.username || !req.body.password) return res.status(400).send({ error: 'bad request' })
-
-    const user = await User.findOne({ username: req.body.username })
+    const username = req.body.username.trim()
+    const user = await User.findOne({ username })
 
     if (!user) {
-        return res.sendStatus(404)
+        return res.sendStatus(400)
     }
-    const isMatch = await bcrypt.compare(req.body.password, user.password)
+    const password = req.body.password.trim()
+    const isMatch = await bcrypt.compare(password, user.password)
 
     if (isMatch) {
         req.session.user = user
