@@ -11,24 +11,27 @@ const auth = require('../middlewares/auth')
 const admin = require('../middlewares/admin')
 const isNotLoggedIn = require('../middlewares/isNotLoggedIn')
 const session = require('express-session')
-// const MongoStore = require('connect-mongodb-session')(session)
 
-// const store = new MongoStore({
-//     uri: process.env.MONGOBD_URL,
-//     collection: 'sessions'
-// })
+const constants = require('../utils/constants')
+const MongoStore = require('connect-mongodb-session')(session)
 
-const cookieTimer = 60 * 5 * 1000
+const store = new MongoStore({
+    uri: process.env.MONGOBD_URL,
+    collection: 'sessions'
+})
+
+const cookieTimer = constants.cookieTimer
 
 app.use(session({
-    secret: 'mysecret',
+    secret: process.env.COOKIE_SECRET,
     saveUninitialized: false,
     resave: false,
-    cookie: { maxAge: cookieTimer }
+    cookie: { maxAge: cookieTimer },
+    store
 }))
 
 app.use(express.static(path.join(__dirname, '../../public')))
-app.use(express.urlencoded())
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 app.set('view engine', 'hbs')
@@ -49,7 +52,7 @@ router.get('/', isNotLoggedIn, (req, res) => {
 
 router.get('/home', auth, async (req, res) => {
     res.status(200).render('home', {
-        role: req.session.user.role
+        user: req.session.user
     })
 })
 
@@ -126,7 +129,7 @@ const dBupload = multer({
 router.get('/upload', auth, admin, (req, res) => {
     createAssetsDir()
     res.status(200).render('upload', {
-        role: req.session.user.role
+        user: req.session.user
     })
 })
 
@@ -136,7 +139,7 @@ router.post('/upload', auth, admin, upload.single('my-video'), (req, res) => {
 
 router.get('/upload/db', admin, auth, (req, res) => {
     res.status(200).render('dBupload', {
-        role: req.session.user.role
+        user: req.session.user
     })
 })
 
@@ -192,6 +195,10 @@ router.get('/playVideo/:videoName', auth, (req, res) => {
     res.writeHead(206, headers)
     const videoStream = fs.createReadStream(videoPath, { start, end })
     videoStream.pipe(res)
+})
+
+router.get('/*', (req, res) => {
+    res.json({ message: 'Not Found' })
 })
 
 module.exports = {

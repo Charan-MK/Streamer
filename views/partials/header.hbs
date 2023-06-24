@@ -9,7 +9,7 @@
     <body>
         <div id="navbar">
             <nav>
-                {{#ifCdn role 'ADMIN' }}
+                {{#ifCdn user.role 'ADMIN' }}
                 <a href="/upload">Upload to On-Premise</a>
                 <a href="/upload/db">Uploadto Database</a>
                 <a href="/localVideos">On-premises Videos</a>
