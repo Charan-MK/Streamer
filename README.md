@@ -1,2 +1,3 @@
 # Streamer
-Video streamer
+
+Video streaming application
