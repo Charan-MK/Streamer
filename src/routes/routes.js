@@ -197,10 +197,6 @@ router.get('/playVideo/:videoName', auth, (req, res) => {
     videoStream.pipe(res)
 })
 
-router.get('/*', (req, res) => {
-    res.json({ message: 'Not Found' })
-})
-
 module.exports = {
     router,
     app

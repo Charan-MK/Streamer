@@ -21,6 +21,12 @@ router.get('/users', auth, isAdmin, async (req, res) => {
 router.post('/users/update', auth, isAdmin, async (req, res) => {
     try {
         const { id, role } = req.body
+
+        const hex = /[0-9A-Fa-f]{6}/g
+
+        if (!hex.test(id)) {
+            return res.sendStatus(400)
+        }
         const user = await User.findOne({ _id: id })
 
         if (!user) {

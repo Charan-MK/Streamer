@@ -9,12 +9,7 @@ a{
     color: inherit;
 }
 
-.dbVideoList{
-    display: grid;
-    grid-template-columns: auto auto auto;
-}
-
-.videoList{
+.videoList, .dbVideoList{
     width: 100%;
     margin: auto;
     display: grid;
