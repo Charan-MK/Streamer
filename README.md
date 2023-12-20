@@ -1,6 +1,6 @@
 # Streamer
 
-A video streaming application which can stream videos to a web browser from a storage service and from a databse storage.
+A video streaming application which can stream videos to a web browser from a storage service and from a database storage.
 
 A user can view videos which are stored in database and the storage service [current implementation of the app supports only streaming videos which are stored in the local storage i.e., device storage]
 
