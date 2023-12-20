@@ -1,10 +1,10 @@
 # Streamer
 
-A video streaming application which can stream videos to a web browser from a local storage and from a databse storage.
+A video streaming application which can stream videos to a web browser from a storage service and from a databse storage.
 
-A user can view the videos which are stored in database and te storage service [Current implementation of the app supports only streaming videos which are stored in the local storage i.e., device storage]
+A user can view videos which are stored in database and the storage service [current implementation of the app supports only streaming videos which are stored in the local storage i.e., device storage]
 
-The app provides BASIC Authentication to the users, and a user with Admin privilege can upload videos to the storage service and database. Database video upload size is limited to 15MB.
+The app provides BASIC Authentication to the users, and a user with Admin privilege can upload videos to the storage service and database. Video upload limit for storage service is 100MB and for database it is limited to 15MB.
 
 ## Node JS Project Structure
 <table>
@@ -17,15 +17,15 @@ The app provides BASIC Authentication to the users, and a user with Admin privil
     <tbody>
         <tr>
             <td><code>public</code></td>
-            <td>this folder contains app icon and style<td>
+            <td>Folder **public** contains app icon and style<td>
         </tr>
         <tr>
             <td><code>src</code></td>
-            <td>this folder contains app routes, middlewares and data models<td>
+            <td>Folder **src** contains app routes, middlewares for authentication and authorization and data models<td>
         </tr>
         <tr>
             <td><code>views</code></td>
-            <td>this folder contains app views for UI<td>
+            <td>Folder **views** contains app views for UI<td>
         </tr>
     </tbody>
 </table>
@@ -33,14 +33,14 @@ The app provides BASIC Authentication to the users, and a user with Admin privil
 ## Requirements
 For development, Node.js needs to be installed on your operating system and should have a MongoDB instance to be configured.
 
-### Node
+### Installations
 - #### Node installation on windows
 1. Download the installer from official Node.js website: https://nodejs.org/en
 
 - #### MongoDB installation on windows
 1. Go to official MongoDB website: https://www.mongodb.com/
 2. Navigate to Products -> Community Edition
-3. Select appropriate package from Select package dropdown
+3. Select appropriate package from Select package dropdown and install the application
 
 ## Dependencies
 Before you run the app, install the project dependencies by running the following command:
@@ -49,9 +49,18 @@ $ npm install
 ```
 
 ## Running the project
-- npm start - to run the app
-- npm run dev - to run the app in dev mode, which starts the server with nodemon
-
+- to run the app
+```bash
+$ npm start
+```
+- to run the app in dev mode, which starts the server with nodemon
+```bash
+$ npm run dev
+```
+- to check for linting errors
+```bash
+$ npm run lint
+```
 ## Environment variables required to run the app
 
 <table>
