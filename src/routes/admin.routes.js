@@ -2,47 +2,28 @@ const express = require('express')
 const router = new express.Router()
 // const { app } = require('./routes')
 
-const User = require('../db/userModel')
 const auth = require('../middlewares/auth')
 const isAdmin = require('../middlewares/admin')
 
+const { getAllUsers, updateUser } = require('../controllers/user.service.controller')
+
 router.get('/users', auth, isAdmin, async (req, res) => {
-    try {
-        const users = await User.find({})
-        if (!users) return res.sendStatus(400)
-        res.render('adminView', {
-            users
+    const response = await getAllUsers()
+
+    if (response.status === 200) {
+        return res.status(200).render('adminView', {
+            users: response.data
         })
-    } catch (error) {
-        res.sendStatus(500)
     }
+
+    res.sendStatus(response.status)
 })
 
 router.post('/users/update', auth, isAdmin, async (req, res) => {
-    try {
-        const { id, role } = req.body
+    const response = await updateUser(req)
 
-        const hex = /[0-9A-Fa-f]{6}/g
-
-        if (!hex.test(id)) {
-            return res.sendStatus(400)
-        }
-        const user = await User.findOne({ _id: id })
-
-        if (!user) {
-            return res.sendStatus(400)
-        }
-
-        if (req.session.user._id === id) {
-            return res.status(400).send('Admin cannot change his role by himself')
-        }
-
-        user.role = role
-        await user.save()
+    if (response.status === 200) {
         res.status(200).redirect('/users')
-    } catch (error) {
-        console.log(error)
-        res.sendStatus(500)
     }
 })
 module.exports = router

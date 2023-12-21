@@ -21,7 +21,23 @@ The app provides BASIC Authentication to the users, and a user with Admin privil
         </tr>
         <tr>
             <td><code>src</code></td>
-            <td>Folder **src** contains app routes, middlewares for authentication and authorization and data models<td>
+            <td>Folder **src** contains directories controller, db, middlewares, and routes<td>
+        </tr>
+        <tr>
+            <td><code>controllers</code></td>
+            <td>Folder **controllers** contains bsiness logic for handing routes<td>
+        </tr>
+        <tr>
+            <td><code>db</code></td>
+            <td>Folder **db** contains database connectivity and data models for videos and users<td>
+        </tr>
+        <tr>
+            <td><code>middlewares</code></td>
+            <td>Folder **middlewares** contains configurations of multer and user authentication and authorization<td>
+        </tr>
+        <tr>
+            <td><code>routes</code></td>
+            <td>Folder **routes** contains routes of the application<td>
         </tr>
         <tr>
             <td><code>views</code></td>

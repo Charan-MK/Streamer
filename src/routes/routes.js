@@ -15,7 +15,7 @@ const isNotLoggedIn = require('../middlewares/isNotLoggedIn')
 const { dBupload, upload, createAssetsDir } = require('../middlewares/multer.config')
 
 // import controllers to handle routes activities
-const { getDatabaseVideosList, getDatabaseVideo, uploadVideoToDatabase } = require('../controllers/database.service.controller')
+const { getDatabaseVideosList, getDatabaseVideo, uploadVideoToDatabase } = require('../controllers/video.service.controller')
 const { getStotageVideoList } = require('../controllers/storage.service.controller')
 
 // set up MongoStore to store user sessions
