@@ -7,12 +7,16 @@
     </head>
 
     <body>
-        <h3>DB List</h3>
-        <a href="/">Back</a>
-        {{#each dbVideoList}}
-        <div id="videoList">
-            <a href="/db/videos/{{this}}">{{this}}</a>
+        <div class="header-div">
+            <h2>DB List</h2>
+            <a href="/">Back</a>
         </div>
-        {{/each}}
+       <div class="dbVideoList">
+            {{#each dbVideoList}}
+            <div id="videoList">
+                <a href="/db/videos/{{this}}">{{this}}</a>
+            </div>
+            {{/each}}
+       </div>
     </body>
 </html>

@@ -3,154 +3,141 @@ const router = express.Router()
 const path = require('path')
 const fs = require('fs')
 const app = express()
-const multer = require('multer')
-const Video = require('../db/videoModel')
-require('../db/mongoose')
 const hbs = require('hbs')
-const auth = require('../middlewares/auth')
-
 const session = require('express-session')
-// const MongoStore = require('connect-mongodb-session')(session)
 
-// const store = new MongoStore({
-//     uri: process.env.MONGOBD_URL,
-//     collection: 'sessions'
-// })
+require('../db/mongoose')
 
-const cookieTimer = 60 * 2 * 1000
+// import all the middlewares
+const auth = require('../middlewares/auth')
+const admin = require('../middlewares/admin')
+const isNotLoggedIn = require('../middlewares/isNotLoggedIn')
+const { dBupload, upload, createAssetsDir } = require('../middlewares/multer.config')
 
+// import controllers to handle routes activities
+const { getDatabaseVideosList, getDatabaseVideo, uploadVideoToDatabase } = require('../controllers/video.service.controller')
+const { getStotageVideoList } = require('../controllers/storage.service.controller')
+
+// set up MongoStore to store user sessions
+const MongoStore = require('connect-mongodb-session')(session)
+const store = new MongoStore({
+    uri: process.env.MONGOBD_URL,
+    collection: 'sessions'
+})
+
+// set up cookies to establisg session
+const constants = require('../utils/constants')
+const cookieTimer = constants.cookieTimer
 app.use(session({
-    secret: 'mysecret',
+    secret: process.env.COOKIE_SECRET,
     saveUninitialized: false,
     resave: false,
-    cookie: { maxAge: cookieTimer }
+    cookie: { maxAge: cookieTimer },
+    store
 }))
 
+// setup middleware to read static files from public folder
 app.use(express.static(path.join(__dirname, '../../public')))
-app.use(express.urlencoded())
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
+// set the view engine:hbs to render the views to app UI
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, '../../views'))
 hbs.registerPartials(path.join(__dirname, '../../views/partials'))
-
-app.get('/', auth, async (req, res) => {
-    res.status(200).render('home')
+hbs.registerHelper('ifCdn', function (op1, op2, options) {
+    if (op1 === op2) {
+        return options.fn(this)
+    } else {
+        return options.inverse(this)
+    }
 })
 
-// fetch the video from Database
+// load the landing page of the app for login or signup
+router.get('/', isNotLoggedIn, (req, res) => {
+    res.render('landing')
+})
+
+// load the home page of the app
+router.get('/home', auth, async (req, res) => {
+    res.status(200).render('home', {
+        user: req.session.user
+    })
+})
+
+// fetch the video list from Database and render the list in UI
 router.get('/db/videos', auth, async (req, res) => {
-    const dBlist = await Video.find({})
-
-    const dBvideos = []
-    dBlist.forEach(vid => {
-        dBvideos.push(vid.name)
-    })
+    const databaseVideosList = await getDatabaseVideosList()
     res.status(200).render('dbList', {
-        dbVideoList: dBvideos
+        dbVideoList: databaseVideosList
     })
 })
 
+// plays the requested video from database
 router.get('/db/videos/:dbVideoName', auth, async (req, res) => {
     res.status(200).render('dbVideos', {
         dbVideoName: req.params.dbVideoName
     })
 })
 
-// RETRIEVING MEDIA FROM MONGODB DTATABASE
+// fetches the multipart data required to play the requested video from database
 router.get('/db/videos/play/:dbVideoName', auth, async (req, res) => {
-    const video = await Video.find({ name: req.params.dbVideoName }) // fetches the specified video array
+    const videoName = req.params.dbVideoName
+    const databaseVideo = await getDatabaseVideo(videoName)
 
-    if (video.length !== 0) {
-        const dbVideo = video[0].video
-        res.status(200).send(dbVideo)
-    } else {
+    if (!databaseVideo) {
         res.status(400).send({ error: 'Video could not be found' })
     }
+    res.status(200).send(databaseVideo)
 })
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'assets')
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname)
-    }
-})
-
-const upload = multer({
-    storage,
-    limits: {
-        fileSize: 100000000
-    },
-
-    fileFilter (req, file, callback) {
-        if (!file.originalname.match(/\.(mp4|mkv)$/)) {
-            callback(new Error('file type must be .mp4 or .mkv'))
-        }
-
-        callback(undefined, true)
-    }
-})
-
-const dBupload = multer({
-    // storage: storage,
-    limits: {
-        fileSize: 15000000
-    },
-
-    fileFilter (req, file, callback) {
-        if (!file.originalname.match(/\.(mp4|mkv)$/)) {
-            callback(new Error('file type must be .mp4 or .mkv'))
-        }
-
-        callback(undefined, true)
-    }
-})
-
-router.get('/upload', auth, (req, res) => {
+// renders app view to upload video to storage service
+router.get('/upload', auth, admin, (req, res) => {
     createAssetsDir()
-    res.status(200).render('upload')
+    res.status(200).render('upload', {
+        user: req.session.user
+    })
 })
 
-router.post('/upload', auth, upload.single('my-video'), (req, res) => {
+// uploads video to storage service
+router.post('/upload', auth, admin, upload.single('my-video'), (req, res) => {
     res.status(200).render('upload_success')
 })
 
-router.get('/upload/db', auth, (req, res) => {
-    res.status(200).render('dBupload')
-})
-
-router.post('/upload/db', auth, dBupload.single('my-video'), async (req, res) => {
-    const video = new Video({
-        name: req.file.originalname,
-        video: req.file.buffer
+// renders app view to upload video to database
+router.get('/upload/db', admin, auth, (req, res) => {
+    res.status(200).render('dBupload', {
+        user: req.session.user
     })
-    video.save()
-    res.status(201).render('upload_success')
 })
 
-function createAssetsDir () {
-    if (!fs.existsSync(path.join(__dirname, '../../assets'))) {
-        console.log('creating a local directory to store media')
-        fs.mkdirSync('./assets')
+// uploads video to database
+router.post('/upload/db', admin, auth, dBupload.single('my-video'), async (req, res) => {
+    const { originalname, buffer } = req.file
+    const uploadResult = await uploadVideoToDatabase(originalname, buffer)
+
+    if (uploadResult === 'success') {
+        res.status(201).render('upload_success')
+    } else {
+        res.status(500).json({ result: uploadResult })
     }
-}
-
-let videoList = []
-
-router.get('/localVideos', auth, (req, res) => {
-    createAssetsDir()
-    videoList = fs.readdirSync(path.join(__dirname, '../../assets'))
-    res.status(200).render('videoList', { videoList })
 })
 
+// renders the list of videos from storage service
+router.get('/localVideos', auth, async (req, res) => {
+    createAssetsDir()
+    const storageVideosList = await getStotageVideoList()
+    res.status(200).render('videoList', { videoList: storageVideosList })
+})
+
+// plays the requested video from storage service
 router.get('/video/:videoName', auth, (req, res) => {
     res.render('videos', {
         videoName: req.params.videoName
     })
 })
 
+// fetches the multipart data required to play the requested video from storage service
 router.get('/playVideo/:videoName', auth, (req, res) => {
     let range = req.headers.range
     // console.log("This is range", range)

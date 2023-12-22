@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Home</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="/style.css">
         <link rel="shortcut icon" href="icon.png" type="image/x-icon">
     </head>
 
     <body>
-        {{> header }}
-        <h1>Welcome {{user.name}}</h1> 
+        <nav>
+            <a href="/login">Login</a>
+            <a href="/signup">Signup</a>
+        </nav>
+
+        <h1>Welcome</h1>
         <img src="icon.png" alt="Streamer"> <br>
-        
     </body>
 </html>

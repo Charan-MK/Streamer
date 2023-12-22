@@ -11,6 +11,9 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-            "indent": ["error", 4]    
+            "indent": ["error", 4],
+            "quotes": [2, "single", { "avoidEscape": true }],
+            "no-unused-vars": "error",
+            "no-unused-expressions": "error"
         }                                 
 }

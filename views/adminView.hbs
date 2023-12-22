@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+    </head>
+
+    <body>
+        <div class="header-div">
+            <h2 style="width: 80%;" >Welcome</h2>
+            <a href="/home">Home</a>
+        </div>
+        
+        <div class="users">
+            
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each users}}
+                            <tr>
+                                <td>{{this.name}}</td>
+                                <td>{{this.username}}</td>
+                                <td>
+                                    <form id="userUpdateForm" action="/users/update" method="post">
+                                        <input type="hidden" name="id" value={{this._id}}>
+                                        <select name='role'>
+                                            <option value="ADMIN" {{#ifCdn this.role 'ADMIN'}} selected {{/ifCdn}}>Admin</option>
+                                            <option value="MODERATOR" {{#ifCdn this.role 'MODERATOR'}} selected {{/ifCdn}} >Moderator</option>
+                                            <option value="CLIENT" {{#ifCdn this.role 'CLIENT'}} selected {{/ifCdn}} >Client</option>
+                                        </select>
+
+                                        <button>Update</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            
+        </div>
+        
+    </body>
+</html>

@@ -2,9 +2,9 @@ const express = require('express')
 const router = new express.Router()
 const { app } = require('./routes')
 
-const User = require('../db/userModel')
-const bcrypt = require('bcryptjs')
 const auth = require('../middlewares/auth')
+
+const { getUser, createUser } = require('../controllers/user.service.controller')
 
 app.use(express.json())
 
@@ -13,21 +13,12 @@ router.get('/signup', (req, res) => {
 })
 
 router.post('/signup', async (req, res) => {
-    try {
-        if (!req.body) {
-            res.status(400).send({ error: 'Require details' })
-        }
-        let user = await User.find({ username: req.body.username })
-        if (user.length !== 0) {
-            return res.status(400).send({ error: 'Bad request/Invalid credentials' })
-        }
-        user = new User(req.body)
-        await user.save()
-        req.session.user = user
-        res.status(201).redirect('/')
-    } catch (error) {
-        console.error(error)
-        res.status(500).send('Something went wrong')
+    const response = await createUser(req)
+    if (response.status === 201) {
+        req.session.user = response.data
+        return res.redirect('/home')
+    } else {
+        res.status(response.status).send(response.data)
     }
 })
 
@@ -36,15 +27,12 @@ router.get('/login', (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-    if (!req.body.username || !req.body.password) return res.status(400).send({ error: 'bad request' })
-    const user = await User.findOne({ username: req.body.username })
-    const isMatch = await bcrypt.compare(req.body.password, user.password)
-
-    if (isMatch) {
-        req.session.user = user
-        return res.redirect('/')
+    const response = await getUser(req)
+    if (response.status === 200) {
+        req.session.user = response.data
+        return res.redirect('/home')
     }
-    res.status(401).send('unauthorized')
+    res.status(response.status).send(response.data)
 })
 
 router.get('/logout', auth, (req, res) => {

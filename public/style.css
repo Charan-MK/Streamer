@@ -9,15 +9,38 @@ a{
     color: inherit;
 }
 
+.videoList, .dbVideoList{
+    width: 100%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+}
+
 #videoList{
+    width: 93%;
     background-color: #3b3b3b;
-    height: 20px;
-    display: flex;
-    padding: 20px 10px 20px;
+    height: 10em;
+    display: inherit;
+    align-items: center;
+    padding: 2% 3% 1%;
     border: 5px;
     border-radius: 5px;
-    box-shadow: 2px;
     margin-top: 1%;
+    margin-right: 1%;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+#videoList a{
+    width: 90%;
+}
+
+#videoList a:hover{
+    color: #69cf5f;
+}
+
+#videoList:hover{
+    background-color: darkslategray;
 }
 
 #uploadFile{
@@ -67,7 +90,7 @@ nav a{
 }
 
 nav{
-    margin: 3%;
+    margin: 2%;
 }
 
 img{
@@ -79,4 +102,64 @@ input{
     padding: 15px 10px 15px;
     border-radius: 5px;
     margin: 5px 2px 5px;
+}
+
+#logout_link{
+    background-color: lightcoral;
+}
+
+table{
+    width: 90%;
+    margin: auto;
+}
+
+thead{
+    background-color: #464545;
+}
+
+td, th{
+    padding: 10px;
+    text-align: center;
+}
+
+tr:nth-child(even){
+    background-color: #464545;
+}
+
+select{
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#userUpdateForm{
+
+    height: fit-content;
+
+}
+
+#userUpdateForm select{
+    margin: auto 2%;
+    width: 45%;
+}
+#userUpdateForm button{
+    margin: auto 2%;
+    width: 45%;
+}
+
+.header-div{
+    display: flex;
+}
+
+.header-div a{
+    float: right;
+    margin: auto;
+}
+
+.header-div a:hover{
+    color: #52c448;
+}
+
+.header-div h2{
+    width: 80%;
+    color: #52c448;
 }

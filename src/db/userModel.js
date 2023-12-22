@@ -1,3 +1,5 @@
+const { roles } = require('../utils/roles')
+
 try {
     const mongoose = require('mongoose')
     const validator = require('validator')
@@ -40,11 +42,21 @@ try {
                 type: String,
                 required: true
             }
-        }]
+        }],
+
+        role: {
+            type: String,
+            enum: [roles.admin, roles.moderator, roles.client],
+            default: roles.client
+        }
     })
 
     userSchema.pre('save', async function (next) {
         const user = this
+        if (user.email === process.env.ADMIN_EMAIL) {
+            user.role = 'ADMIN'
+        }
+
         if (user.isModified('password')) {
             user.password = await bcrypt.hash(user.password, 8)
         }

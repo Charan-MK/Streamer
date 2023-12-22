@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "node src/server.js",
-    "start": "",
+    "start": "env-cmd -f .env node src/server.js",
     "dev": "env-cmd -f ./dev.env nodemon src/server.js",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
-    "lint:check": "eslint .",
+    "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
   "keywords": [
